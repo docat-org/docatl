@@ -12,7 +12,7 @@ Download the [latest Release binary](https://github.com/docat-org/docatl/release
 and start pushing your documentation:
 
 ```sh
-docatl push --host docat.company.io ./docs.zip myproject v1.0.0
+docatl push --host https://docat.company.io ./docs.zip myproject v1.0.0
 ```
 
 **Supported commands:**
