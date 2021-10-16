@@ -79,3 +79,7 @@ The `DOCATL_` must be used, e.g.:
 ```sh
 DOCATL_API_KEY=blabla docatl push ...
 ```
+
+## Shell auto-completion
+
+Run `docatl completion` to install auto-completion for your shell.
