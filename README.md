@@ -101,3 +101,17 @@ DOCATL_API_KEY=blabla docatl push ...
 ## Shell auto-completion
 
 Run `docatl completion` to install auto-completion for your shell.
+
+## OMG. You could have just used `curl`
+
+Yes, absolutely. However, there are a few advantages when using `docatl`.
+Some of those are:
+
+* easily discover the interaction points with docat using `docatl help`
+* easily work with configuration using a config file or environment variables
+* nice error messages
+* don't have to bother with all the unnessecary flags for this use case `curl` provide
+* standalone binary for your platform available
+* container image available to run in your Continuous Integration platform
+
+Not convinced? Use `curl` ;)
