@@ -15,6 +15,31 @@ and start pushing your documentation:
 docatl push --host docat.company.io ./docs.zip myproject v1.0.0
 ```
 
+## Installation
+
+* Binaries for your platform are attached to each release [here](https://github.com/docat-org/docat-cli/releases)
+* Container images are available on ghcr.io [here](https://github.com/docat-org/docat-cli/pkgs/container/docatl)
+
+### Using Go
+
+You can install the package using go directly:
+
+```sh
+go install github.com/docat-org/docat-cli
+```
+
+The `docatl` binary will be placed in `$GOPATH/bin`.
+
+### Using wget / curl
+
+You can use `wget` or `curl` to download a release.
+Make sure that you are using the correct version and platform names in the URL.
+
+E.g downloading `v0.1.0` for `Linux` `x86_64`:
+```sh
+wget https://github.com/docat-org/docat-cli/releases/download/v0.1.0/docatl_0.1.0_Linux_x86_64
+```
+
 ## Ci System Support
 
 We build a [Container Image](https://github.com/docat-org/docat-cli/pkgs/container/docatl) you can use

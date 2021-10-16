@@ -55,9 +55,9 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.docat-cli.yaml)")
 	rootCmd.PersistentFlags().StringVar(&docat.Host, "host", "", "docat hostname (e.g. https://docat.company.com:8000)")
 	rootCmd.PersistentFlags().StringVar(&docat.ApiKey, "api-key", "", "docat Api Key")
-	err := rootCmd.MarkFlagRequired("host")
+	err := rootCmd.MarkPersistentFlagRequired("host")
 	if err != nil {
-		log.Fatal("unable to mark flag `host` as required. Please create an upstream issue!")
+		log.Fatalf("unable to mark flag `host` as required. Please create an upstream issue: %s", err)
 	}
 }
 
