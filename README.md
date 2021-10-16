@@ -20,7 +20,7 @@ docatl push --host https://docat.company.io ./docs.zip myproject v1.0.0
 * `push`: pushing documentation to a docat server
 * `tag`: tag a documentation on a docat server
 * `claim`: claim a documentation project on a docat server
-* `delete`: delete documentation form a docat server
+* `delete`: delete documentation from a docat server
 
 ## Installation
 
