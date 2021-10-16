@@ -37,7 +37,7 @@ Make sure that you are using the correct version and platform names in the URL.
 
 E.g downloading `v0.1.0` for `Linux` `x86_64`:
 ```sh
-wget https://github.com/docat-org/docat-cli/releases/download/v0.1.0/docatl_0.1.0_Linux_x86_64
+wget https://github.com/docat-org/docat-cli/releases/download/v0.1.0/docatl_0.1.0_Linux_x86_64 -O ~/bin/docatl
 ```
 
 ## Ci System Support
