@@ -40,6 +40,17 @@ E.g downloading `v0.1.0` for `Linux` `x86_64`:
 wget https://github.com/docat-org/docat-cli/releases/download/v0.1.0/docatl_0.1.0_Linux_x86_64 -O ~/bin/docatl
 ```
 
+### Using docker
+
+You can run `docatl` in a docker container:
+
+```sh
+docker run -v $PWD:/docs ghcr.io/docat-org/docatl:latest push ./docs.zip myproject v1.0.0
+```
+
+Notice that your `$PWD` will be mounted as volume to the containers `/docs` directory.
+The `.docatl.yaml` and `./docs.zip` file (in the example case) are relative to that `/docs` directory.
+
 ## Ci System Support
 
 We build a [Container Image](https://github.com/docat-org/docat-cli/pkgs/container/docatl) you can use
