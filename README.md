@@ -52,6 +52,30 @@ Use the following Job template to publish the docs:
 ```yaml
 deploy-docs:
   image: ghcr.io/docat-org/docatl:latest
+  variables:
+    DOCATL_HOST: https://docat.company.io
+    DOCATL_API_KEY: blabla
   script:
-    - --host docat.company.io ./docs.zip $CI_PROJECT $CI_COMMIT_TAG
+    - ./docs.zip $CI_PROJECT $CI_COMMIT_TAG
+```
+
+## Configuration
+
+You can configure `docatl` with either command line arguments, env variables and/or a config file (evaluated in that order of precedence).
+
+### Config File
+
+The config file must be at the working directory at `.docatl.yaml`, e.g.:
+
+```yaml
+host: https://docat.company.io
+api-key: blabla
+```
+
+### Environment Variable
+
+The `DOCATL_` must be used, e.g.:
+
+```sh
+DOCATL_API_KEY=blabla docatl push ...
 ```

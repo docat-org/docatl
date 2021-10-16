@@ -17,14 +17,17 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	docatl "github.com/timofurrer/docat-cli/pkg"
 
 	"github.com/spf13/viper"
 )
+
+const envPrefix = "DOCATL"
 
 var cfgFile string
 
@@ -52,13 +55,14 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.docat-cli.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.docatl.yaml)")
 	rootCmd.PersistentFlags().StringVar(&docat.Host, "host", "", "docat hostname (e.g. https://docat.company.com:8000)")
 	rootCmd.PersistentFlags().StringVar(&docat.ApiKey, "api-key", "", "docat Api Key")
-	err := rootCmd.MarkPersistentFlagRequired("host")
-	if err != nil {
-		log.Fatalf("unable to mark flag `host` as required. Please create an upstream issue: %s", err)
-	}
+
+	// err := rootCmd.MarkPersistentFlagRequired("host")
+	// if err != nil {
+	// 	log.Fatalf("unable to mark flag `host` as required. Please create an upstream issue: %s", err)
+	// }
 }
 
 func initConfig() {
@@ -66,15 +70,19 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".docat-cli" (without extension).
+		cwd, err := os.Getwd()
+		cobra.CheckErr(err)
+
 		viper.AddConfigPath(home)
+		viper.AddConfigPath(cwd)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".docat-cli")
+		viper.SetConfigName(".docatl")
 	}
+
+	viper.SetEnvPrefix(envPrefix)
 
 	viper.AutomaticEnv() // read in environment variables that match
 
@@ -82,4 +90,20 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
+
+	bindFlags(rootCmd, viper.GetViper())
+}
+
+func bindFlags(cmd *cobra.Command, v *viper.Viper) {
+	cmd.Flags().VisitAll(func(f *pflag.Flag) {
+		if strings.Contains(f.Name, "-") {
+			envVarSuffix := strings.ToUpper(strings.ReplaceAll(f.Name, "-", "_"))
+			v.BindEnv(f.Name, fmt.Sprintf("%s_%s", envPrefix, envVarSuffix))
+		}
+
+		if !f.Changed && v.IsSet(f.Name) {
+			val := v.Get(f.Name)
+			cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val))
+		}
+	})
 }
