@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/timofurrer/docat-cli/cmd"
+import "github.com/docat-org/docat-cli/cmd"
 
 func main() {
 	cmd.Execute()
