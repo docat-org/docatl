@@ -1,4 +1,4 @@
-module github.com/docat-org/docat-cli
+module github.com/docat-org/docatl
 
 go 1.17
 

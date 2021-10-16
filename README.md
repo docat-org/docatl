@@ -4,11 +4,11 @@
 
 **Manage your docat documentation with ease.**
 
-[![build](https://github.com/docat-org/docat-cli/workflows/Ci/badge.svg)](https://github.com/docat-org/docat-cli/actions)
+[![build](https://github.com/docat-org/docatl/workflows/Ci/badge.svg)](https://github.com/docat-org/docatl/actions)
 
 ## Getting Started
 
-Download the [latest Release binary](https://github.com/docat-org/docat-cli/releases/latest) for your platform
+Download the [latest Release binary](https://github.com/docat-org/docatl/releases/latest) for your platform
 and start pushing your documentation:
 
 ```sh
@@ -17,15 +17,15 @@ docatl push --host docat.company.io ./docs.zip myproject v1.0.0
 
 ## Installation
 
-* Binaries for your platform are attached to each release [here](https://github.com/docat-org/docat-cli/releases)
-* Container images are available on ghcr.io [here](https://github.com/docat-org/docat-cli/pkgs/container/docatl)
+* Binaries for your platform are attached to each release [here](https://github.com/docat-org/docatl/releases)
+* Container images are available on ghcr.io [here](https://github.com/docat-org/docatl/pkgs/container/docatl)
 
 ### Using Go
 
 You can install the package using go directly:
 
 ```sh
-go install github.com/docat-org/docat-cli
+go install github.com/docat-org/docatl@latest
 ```
 
 The `docatl` binary will be placed in `$GOPATH/bin`.
@@ -37,7 +37,7 @@ Make sure that you are using the correct version and platform names in the URL.
 
 E.g downloading `v0.1.0` for `Linux` `x86_64`:
 ```sh
-wget https://github.com/docat-org/docat-cli/releases/download/v0.1.0/docatl_0.1.0_Linux_x86_64 -O ~/bin/docatl
+wget https://github.com/docat-org/docatl/releases/download/v0.1.0/docatl_0.1.0_Linux_x86_64 -O ~/bin/docatl
 ```
 
 ### Using docker
@@ -53,7 +53,7 @@ The `.docatl.yaml` and `./docs.zip` file (in the example case) are relative to t
 
 ## Ci System Support
 
-We build a [Container Image](https://github.com/docat-org/docat-cli/pkgs/container/docatl) you can use
+We build a [Container Image](https://github.com/docat-org/docatl/pkgs/container/docatl) you can use
 in your Ci system.
 
 ### GitLab Ci

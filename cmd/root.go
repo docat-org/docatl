@@ -20,7 +20,7 @@ import (
 	"os"
 	"strings"
 
-	docatl "github.com/docat-org/docat-cli/pkg"
+	docatl "github.com/docat-org/docatl/pkg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
