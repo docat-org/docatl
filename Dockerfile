@@ -11,4 +11,5 @@ RUN CGO_ENABLED=0 go build -o /bin/docatl
 FROM scratch
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /bin/docatl /bin/docatl
+WORKDIR /docs
 ENTRYPOINT [ "/bin/docatl" ]
