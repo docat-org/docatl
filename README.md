@@ -24,7 +24,7 @@ in your Ci system.
 
 Use the following Job template to publish the docs:
 
-```sh
+```yaml
 deploy-docs:
   image: ghcr.io/docat-org/docatl:latest
   script:
