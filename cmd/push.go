@@ -49,7 +49,7 @@ Upload documentation to specific docat server:
 		project := viper.GetString("project")
 		version := viper.GetString("version")
 
-		if util.IsDirectory(docsPath) {
+		unpackArgs := func() (string, string) {
 			if project == "" {
 				if len(args) < 2 {
 					log.Fatalf("when PROJECT is not given, the DOCATL_PROJECT variable must contain it")
@@ -64,6 +64,13 @@ Upload documentation to specific docat server:
 					version = args[2]
 				}
 			}
+
+			return project, version
+		}
+
+		if util.IsDirectory(docsPath) {
+
+			project, version = unpackArgs()
 
 			docsPathBuilt, err := docatl.Build(docsPath, docatl.BuildMetadata{
 				Host:    docat.Host,
@@ -87,9 +94,7 @@ Upload documentation to specific docat server:
 			project = meta.Project
 			version = meta.Version
 
-			if project == "" || version == "" {
-				log.Fatal("when PROJECT and VERSION are not given, the `.docatl.meta.yaml` file in the archive must contain them. Use `docatl build` to make sure it exists")
-			}
+			project, version = unpackArgs()
 		}
 
 		ensureHost()
