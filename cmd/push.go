@@ -20,6 +20,8 @@ import (
 	"os"
 	"path"
 
+	util "github.com/docat-org/docatl/internal"
+	docatl "github.com/docat-org/docatl/pkg"
 	"github.com/spf13/cobra"
 )
 
@@ -34,6 +36,10 @@ Upload documentation:
 
 	docatl push ./docs.zip myproject 1.0.0 -t latest
 
+Build & Upload documentation:
+
+	docatl push ./docs/ myproject 1.0.0 -t latest
+
 Upload documentation to specific docat server:
 
 	docatl push --host localhost:8000 ./docs.zip myproject 1.0.0 -t latest
@@ -41,10 +47,19 @@ Upload documentation to specific docat server:
 	Args: cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		docsPath, project, version := args[0], args[1], args[2]
-		currentDir, _ := os.Getwd()
+		currentDir, err := os.Getwd()
+		cobra.CheckErr(err)
 		docsPath = path.Join(currentDir, docsPath)
 
-		err := docat.Post(project, version, docsPath)
+		if util.IsDirectory(docsPath) {
+			docsPath, err = docatl.Build(util.ResolvePath(docsPath), docatl.BuildMetadata{
+				Project: project,
+				Version: version,
+			})
+			cobra.CheckErr(err)
+		}
+
+		err = docat.Post(project, version, docsPath)
 		if err != nil {
 			log.Fatal(err)
 		}
