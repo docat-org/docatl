@@ -31,6 +31,9 @@ Tag documentation:
 	docatl tag --host https://localhost:8000 myproject 1.0.0 latest
 `,
 	Args: cobra.ExactArgs(3),
+	PreRun: func(cmd *cobra.Command, args []string) {
+		ensureHost()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		project, version, tag := args[0], args[1], args[2]
 

@@ -31,6 +31,9 @@ Delete documentation:
 	docatl delete myproject 1.0.0
 `,
 	Args: cobra.ExactArgs(2),
+	PreRun: func(cmd *cobra.Command, args []string) {
+		ensureHost()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		project, version := args[0], args[1]
 
