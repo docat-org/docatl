@@ -87,8 +87,10 @@ deploy-docs:
   variables:
     DOCATL_HOST: https://docat.company.io
     DOCATL_API_KEY: blabla
+    DOCATL_PROJECT: $CI_PROJECT
+    DOCTAL_VERSION: $CI_COMMIT_TAG
   script:
-    - push ./docs.zip $CI_PROJECT $CI_COMMIT_TAG
+    - push ./docs
 ```
 
 ## Configuration
