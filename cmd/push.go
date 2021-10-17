@@ -17,8 +17,6 @@ package cmd
 
 import (
 	"log"
-	"os"
-	"path"
 
 	util "github.com/docat-org/docatl/internal"
 	docatl "github.com/docat-org/docatl/pkg"
@@ -28,7 +26,7 @@ import (
 var additionalTag string
 
 var pushCmd = &cobra.Command{
-	Use:   "push DOCS PROJECT VERSION",
+	Use:   "push DOCS [PROJECT] [VERSION]",
 	Short: "Push documentation to a docat server",
 	Long: `Push documentation to a docat server.
 
@@ -44,22 +42,48 @@ Upload documentation to specific docat server:
 
 	docatl push --host localhost:8000 ./docs.zip myproject 1.0.0 -t latest
 `,
-	Args: cobra.ExactArgs(3),
+	Args: cobra.RangeArgs(1, 3),
 	Run: func(cmd *cobra.Command, args []string) {
-		docsPath, project, version := args[0], args[1], args[2]
-		currentDir, err := os.Getwd()
-		cobra.CheckErr(err)
-		docsPath = path.Join(currentDir, docsPath)
+		docsPath := util.ResolvePath(args[0])
+		var project string
+		var version string
 
 		if util.IsDirectory(docsPath) {
-			docsPath, err = docatl.Build(util.ResolvePath(docsPath), docatl.BuildMetadata{
+			if len(args) != 3 {
+				log.Fatalf("when DOCS is a directory you must provide a PROJECT and VERSION")
+			}
+			project, version = args[1], args[2]
+
+			docsPathBuilt, err := docatl.Build(docsPath, docatl.BuildMetadata{
+				Host:    docat.Host,
 				Project: project,
 				Version: version,
 			})
-			cobra.CheckErr(err)
+			if err != nil {
+				log.Fatal(err)
+			}
+			docsPath = docsPathBuilt
+		} else {
+			meta, err := docatl.ExtractMetadata(docsPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			if meta.Host != "" {
+				docat.Host = meta.Host
+			}
+
+			project = meta.Project
+			version = meta.Version
+
+			if project == "" || version == "" {
+				log.Fatal("when PROJECT and VERSION are not given, the `.docatl.meta.yaml` file in the archive must contain them. Use `docatl build` to make sure it exists")
+			}
 		}
 
-		err = docat.Post(project, version, docsPath)
+		ensureHost()
+
+		err := docat.Post(project, version, docsPath)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -79,5 +103,7 @@ Upload documentation to specific docat server:
 
 func init() {
 	rootCmd.AddCommand(pushCmd)
-	rootCmd.PersistentFlags().StringVar(&additionalTag, "tag", "", "Additional Tag for this version")
+	pushCmd.PersistentFlags().StringVar(&additionalTag, "tag", "", "Additional Tag for this version")
+
+	setupEnv(pushCmd)
 }

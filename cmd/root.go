@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -67,9 +68,12 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", defaultConfigPath, "config file")
 	rootCmd.PersistentFlags().StringVar(&docat.Host, "host", "", "docat hostname (e.g. https://docat.company.com:8000)")
 	rootCmd.PersistentFlags().StringVar(&docat.ApiKey, "api-key", "", "docat Api Key")
+}
 
-	err = rootCmd.MarkPersistentFlagRequired("host")
-	cobra.CheckErr(err)
+func ensureHost() {
+	if docat.Host == "" {
+		log.Fatal("host setting is missing. Either use `--host <host>` or `DOCATL_HOST=<host>` or a config file with the `host:` field.")
+	}
 }
 
 func initConfig() {

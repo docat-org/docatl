@@ -46,6 +46,7 @@ Example:
 		cobra.CheckErr(err)
 
 		outputPath, err := docatl.Build(docsPath, docatl.BuildMetadata{
+			Host:    docat.Host,
 			Project: project,
 			Version: version,
 		})

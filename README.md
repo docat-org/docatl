@@ -15,6 +15,19 @@ and start pushing your documentation:
 docatl push --host https://docat.company.io ./docs.zip myproject v1.0.0
 ```
 
+or with an implicit build:
+
+```sh
+docatl push --host https://docat.company.io ./docs/ myproject v1.0.0
+```
+
+or with an explicit build step and push an artifact:
+
+```sh
+docatl build ./docs --host https://docat.company.io --projecy myproject --version v1.0.0
+docatl push ./docs_myproject_v1.0.0.zip
+```
+
 **Supported commands:**
 
 * `push`: pushing documentation to a docat server

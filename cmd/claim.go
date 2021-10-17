@@ -33,6 +33,9 @@ Claim a project:
 	docatl claim myproject
 `,
 	Args: cobra.ExactArgs(1),
+	PreRun: func(cmd *cobra.Command, args []string) {
+		ensureHost()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		project := args[0]
 
