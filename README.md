@@ -83,7 +83,7 @@ Use the following Job template to publish the docs:
 
 ```yaml
 deploy-docs:
-  image: ghcr.io/docat-org/docatl:latest
+  image: ghcr.io/docat-org/docatl:latest-alpine
   variables:
     DOCATL_HOST: https://docat.company.io
     DOCATL_API_KEY: blabla
@@ -97,7 +97,7 @@ Automatically tag with `latest`:
 
 ```yaml
 deploy-docs:
-  image: ghcr.io/docat-org/docatl:latest
+  image: ghcr.io/docat-org/docatl:latest-alpine
   variables:
     DOCATL_HOST: https://docat.company.io
     DOCATL_API_KEY: blabla
@@ -106,6 +106,8 @@ deploy-docs:
   script:
     - push ./docs --tag latest
 ```
+
+Note: you must use the `-alpine` variant on the container image, because GitLab Ci needs a shell.
 
 ## Configuration
 
