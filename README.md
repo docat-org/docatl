@@ -136,7 +136,7 @@ Run `docatl completion` to install auto-completion for your shell.
 
 ## Pronounciation
 
-`docatl` must strictly be pronounced with an Austrian accent, see proof from [@randombenj](https://github.com/randombenj):
+`docatl` must strictly be pronounced with an Austrian accent, see proof from [@randombenj](https://github.com/randombenj) (in swiss german):
 
 ![pronounciation](docs/pronounciation.png)
 
