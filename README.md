@@ -93,6 +93,20 @@ deploy-docs:
     - push ./docs
 ```
 
+Automatically tag with `latest`:
+
+```yaml
+deploy-docs:
+  image: ghcr.io/docat-org/docatl:latest
+  variables:
+    DOCATL_HOST: https://docat.company.io
+    DOCATL_API_KEY: blabla
+    DOCATL_PROJECT: $CI_PROJECT_NAME
+    DOCTAL_VERSION: $CI_COMMIT_TAG
+  script:
+    - push ./docs --tag latest
+```
+
 ## Configuration
 
 You can configure `docatl` with either command line arguments, env variables and/or a config file (evaluated in that order of precedence).
