@@ -8,4 +8,4 @@ RUN apk update \
     && apk add -U --no-cache ca-certificates
 COPY --from=build /bin/docatl /bin/docatl
 WORKDIR /docs
-ENTRYPOINT [ "/bin/docatl" ]
+CMD [ "/bin/docatl" ]
