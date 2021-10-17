@@ -22,10 +22,23 @@ archives:
       386: i386
       amd64: x86_64
 dockers:
-  - image_templates:
+  - dockerfile: "Dockerfile"
+    image_templates:
       - ghcr.io/docat-org/docatl:latest
       - ghcr.io/docat-org/docatl:{{ .Tag }}
       - ghcr.io/docat-org/docatl:{{ .Major }}
+    extra_files:
+      - go.mod
+      - go.sum
+      - main.go
+      - cmd/
+      - pkg/
+      - internal/
+  - dockerfile: "Dockerfile.alpine"
+    image_templates:
+      - ghcr.io/docat-org/docatl:latest-alpine
+      - ghcr.io/docat-org/docatl:{{ .Tag }}-alpine
+      - ghcr.io/docat-org/docatl:{{ .Major }}-alpine
     extra_files:
       - go.mod
       - go.sum
