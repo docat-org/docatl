@@ -116,6 +116,12 @@ DOCATL_API_KEY=blabla docatl push ...
 
 Run `docatl completion` to install auto-completion for your shell.
 
+## Pronounciation
+
+`docatl` must strictly be pronounced with an Austrian accent, see proof from [@randombenj](https://github.com/randombenj):
+
+![pronounciation](docs/pronounciation.png)
+
 ## OMG. You could have just used `curl`
 
 Yes, absolutely. However, there are a few advantages when using `docatl`.
