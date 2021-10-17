@@ -24,8 +24,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-var additionalTag string
-
 var pushCmd = &cobra.Command{
 	Use:   "push DOCS [PROJECT [VERSION]]",
 	Short: "Push documentation to a docat server",
@@ -106,20 +104,22 @@ Upload documentation to specific docat server:
 
 		log.Printf("Successfully pushed documentation version %s to project %s", version, project)
 
-		if additionalTag != "" {
-			err = docat.Tag(project, version, additionalTag)
+		tags, err := cmd.Flags().GetStringSlice("tag")
+		cobra.CheckErr(err)
+		for _, tag := range tags {
+			err = docat.Tag(project, version, tag)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			log.Printf("Successfully tagged version %s of project %s as %s", version, project, additionalTag)
+			log.Printf("Successfully tagged version %s of project %s as %s", version, project, tag)
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(pushCmd)
-	pushCmd.PersistentFlags().StringVar(&additionalTag, "tag", "", "Additional Tag for this version")
+	pushCmd.PersistentFlags().StringSliceP("tag", "t", []string{}, "Additional Tag for this version (repeatable)")
 
 	setupEnv(pushCmd)
 }

@@ -22,7 +22,7 @@ import (
 )
 
 var tagCmd = &cobra.Command{
-	Use:   "tag PROJECT VERSION TAG",
+	Use:   "tag PROJECT VERSION TAG..",
 	Short: "Tag an existing documentation on a docat server",
 	Long: `Tag an existing documentation on a docat server.
 
@@ -30,19 +30,21 @@ Tag documentation:
 
 	docatl tag --host https://localhost:8000 myproject 1.0.0 latest
 `,
-	Args: cobra.ExactArgs(3),
+	Args: cobra.MinimumNArgs(3),
 	PreRun: func(cmd *cobra.Command, args []string) {
 		ensureHost()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		project, version, tag := args[0], args[1], args[2]
+		project, version, tags := args[0], args[1], args[2:]
 
-		err := docat.Tag(project, version, tag)
-		if err != nil {
-			log.Fatal(err)
+		for _, tag := range tags {
+			err := docat.Tag(project, version, tag)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			log.Printf("Successfully tagged version %s of project %s as %s", version, project, tag)
 		}
-
-		log.Printf("Successfully tagged version %s of project %s as %s", version, project, tag)
 	},
 }
 
