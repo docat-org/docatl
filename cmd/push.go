@@ -21,12 +21,13 @@ import (
 	util "github.com/docat-org/docatl/internal"
 	docatl "github.com/docat-org/docatl/pkg"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var additionalTag string
 
 var pushCmd = &cobra.Command{
-	Use:   "push DOCS [PROJECT] [VERSION]",
+	Use:   "push DOCS [PROJECT [VERSION]]",
 	Short: "Push documentation to a docat server",
 	Long: `Push documentation to a docat server.
 
@@ -45,14 +46,24 @@ Upload documentation to specific docat server:
 	Args: cobra.RangeArgs(1, 3),
 	Run: func(cmd *cobra.Command, args []string) {
 		docsPath := util.ResolvePath(args[0])
-		var project string
-		var version string
+		project := viper.GetString("project")
+		version := viper.GetString("version")
 
 		if util.IsDirectory(docsPath) {
-			if len(args) != 3 {
-				log.Fatalf("when DOCS is a directory you must provide a PROJECT and VERSION")
+			if project == "" {
+				if len(args) < 2 {
+					log.Fatalf("when PROJECT is not given, the DOCATL_PROJECT variable must contain it")
+				}
+				project = args[1]
 			}
-			project, version = args[1], args[2]
+
+			if version == "" {
+				if len(args) < 3 {
+					log.Fatalf("when VERSION is not given, the DOCATL_VERSION variable must contain it")
+				} else {
+					version = args[2]
+				}
+			}
 
 			docsPathBuilt, err := docatl.Build(docsPath, docatl.BuildMetadata{
 				Host:    docat.Host,
