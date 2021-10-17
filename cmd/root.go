@@ -18,6 +18,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	docatl "github.com/docat-org/docatl/pkg"
@@ -27,7 +28,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-const envPrefix = "DOCATL"
+const (
+	envPrefix      = "DOCATL"
+	configFileName = ".docatl"
+	configFileType = "yaml"
+)
 
 var cfgFile string
 
@@ -55,11 +60,15 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.docatl.yaml)")
+	cwd, err := os.Getwd()
+	cobra.CheckErr(err)
+	defaultConfigPath := filepath.Join(cwd, fmt.Sprintf("%s.%s", configFileName, configFileType))
+
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", defaultConfigPath, "config file")
 	rootCmd.PersistentFlags().StringVar(&docat.Host, "host", "", "docat hostname (e.g. https://docat.company.com:8000)")
 	rootCmd.PersistentFlags().StringVar(&docat.ApiKey, "api-key", "", "docat Api Key")
 
-	err := rootCmd.MarkPersistentFlagRequired("host")
+	err = rootCmd.MarkPersistentFlagRequired("host")
 	cobra.CheckErr(err)
 }
 
@@ -76,8 +85,8 @@ func initConfig() {
 
 		viper.AddConfigPath(home)
 		viper.AddConfigPath(cwd)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".docatl")
+		viper.SetConfigType(configFileType)
+		viper.SetConfigName(configFileName)
 	}
 
 	viper.SetEnvPrefix(envPrefix)
