@@ -90,7 +90,7 @@ deploy-docs:
     DOCATL_PROJECT: $CI_PROJECT_NAME
     DOCTAL_VERSION: $CI_COMMIT_TAG
   script:
-    - push ./docs
+    - docatl push ./docs
 ```
 
 Automatically tag with `latest`:
@@ -104,7 +104,7 @@ deploy-docs:
     DOCATL_PROJECT: $CI_PROJECT_NAME
     DOCTAL_VERSION: $CI_COMMIT_TAG
   script:
-    - push ./docs --tag latest
+    - docatl push ./docs --tag latest
 ```
 
 Note: you must use the `-alpine` variant on the container image, because GitLab Ci needs a shell.
