@@ -4,6 +4,9 @@ COPY . /src/
 RUN CGO_ENABLED=0 go build -o /bin/docatl
 
 FROM alpine:latest
+RUN apk update \
+    && apk add -U --no-cache ca-certificates \
+    && update-ca-certificates
 COPY --from=build /bin/docatl /bin/docatl
 WORKDIR /docs
 ENTRYPOINT [ "/bin/docatl" ]
