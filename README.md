@@ -1,6 +1,6 @@
 # docatl, the docat cli
 
-![docat](https://github.com/randombenj/docat/raw/master/doc/assets/docat-teaser.png)
+![docat](https://github.com/docat-org/.github/blob/main/logo.png?raw=true)
 
 **Manage your docat documentation with ease.**
 
