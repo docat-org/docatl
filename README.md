@@ -1,4 +1,4 @@
-# docatl, the docat cli
+# docatl, the docat cli 🙀
 
 ![docat](https://github.com/docat-org/.github/blob/main/logo.png?raw=true)
 
