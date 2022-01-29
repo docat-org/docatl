@@ -88,7 +88,7 @@ deploy-docs:
     DOCATL_HOST: https://docat.company.io
     DOCATL_API_KEY: blabla
     DOCATL_PROJECT: $CI_PROJECT_NAME
-    DOCTAL_VERSION: $CI_COMMIT_TAG
+    DOCATL_VERSION: $CI_COMMIT_TAG
   script:
     - docatl push ./docs
 ```
@@ -102,7 +102,7 @@ deploy-docs:
     DOCATL_HOST: https://docat.company.io
     DOCATL_API_KEY: blabla
     DOCATL_PROJECT: $CI_PROJECT_NAME
-    DOCTAL_VERSION: $CI_COMMIT_TAG
+    DOCATL_VERSION: $CI_COMMIT_TAG
   script:
     - docatl push ./docs --tag latest
 ```
