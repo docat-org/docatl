@@ -4,8 +4,8 @@ import (
 	"archive/zip"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 
 	util "github.com/docat-org/docatl/internal"
@@ -29,7 +29,7 @@ func Build(docsPath string, meta BuildMetadata) (string, error) {
 	docsPath = util.ResolvePath(docsPath)
 
 	// NOTE(TF): the `archiver` package does not have an option to not create a top-level directory
-	filesInDocsPath, err := ioutil.ReadDir(docsPath)
+	filesInDocsPath, err := os.ReadDir(docsPath)
 	if err != nil {
 		return "", fmt.Errorf("cannot list the contents within the given documentation directory: %w", err)
 	}
@@ -48,7 +48,7 @@ func Build(docsPath string, meta BuildMetadata) (string, error) {
 
 	outputPath := generateArtifactFileName(docsPath, meta)
 
-	z := archiver.Zip{OverwriteExisting: true}
+	z := archiver.Zip{OverwriteExisting: true,  FileMethod: archiver.BZIP2}
 	err = z.Archive(filesToArchive, outputPath)
 	if err != nil {
 		return "", fmt.Errorf("failed to archive docs: %w", err)
@@ -70,7 +70,7 @@ func generateArtifactFileName(docsPath string, meta BuildMetadata) string {
 }
 
 func generateMetadataFile(meta BuildMetadata) (string, error) {
-	tmpDir, err := ioutil.TempDir("", "docatl-*")
+	tmpDir, err := os.MkdirTemp("", "docatl-*")
 	if err != nil {
 		return "", fmt.Errorf("unable to create temp directory for metadatafile: %w", err)
 	}
@@ -81,7 +81,7 @@ func generateMetadataFile(meta BuildMetadata) (string, error) {
 		return "", fmt.Errorf("unable to generate metadata file for data: %v: %w", meta, err)
 	}
 
-	err = ioutil.WriteFile(metadataFile, doc, 0755)
+	err = os.WriteFile(metadataFile, doc, 0755)
 	if err != nil {
 		return "", fmt.Errorf("unabel to write metadata to file %s: %w", metadataFile, err)
 	}
