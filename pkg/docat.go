@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -58,7 +57,7 @@ func (docat *Docat) Post(project string, version string, docsPath string) error 
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusCreated {
-		bodyBytes, err := ioutil.ReadAll(response.Body)
+		bodyBytes, err := io.ReadAll(response.Body)
 		if err != nil {
 			return fmt.Errorf("unable to upload documentation and read it's response (status code: %d", response.StatusCode)
 		}
@@ -84,7 +83,7 @@ func (docat *Docat) Delete(project string, version string) error {
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		bodyBytes, err := ioutil.ReadAll(response.Body)
+		bodyBytes, err := io.ReadAll(response.Body)
 		if err != nil {
 			return fmt.Errorf("unable to delete documentation and read it's response (status code: %d", response.StatusCode)
 		}
@@ -102,7 +101,7 @@ func (docat *Docat) Claim(project string) (ProjectClaim, error) {
 	}
 	defer response.Body.Close()
 
-	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyBytes, err := io.ReadAll(response.Body)
 	if err != nil {
 		return ProjectClaim{}, fmt.Errorf("unable to claim project and read it's response (status code: %d", response.StatusCode)
 	}
@@ -133,7 +132,7 @@ func (docat *Docat) Tag(project string, version string, tag string) error {
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusCreated {
-		bodyBytes, err := ioutil.ReadAll(response.Body)
+		bodyBytes, err := io.ReadAll(response.Body)
 		if err != nil {
 			return fmt.Errorf("unable to tag documentation and read it's response (status code: %d", response.StatusCode)
 		}
