@@ -48,7 +48,7 @@ func Build(docsPath string, meta BuildMetadata) (string, error) {
 
 	outputPath := generateArtifactFileName(docsPath, meta)
 
-	z := archiver.Zip{OverwriteExisting: true}
+	z := archiver.Zip{OverwriteExisting: true,  FileMethod: archiver.BZIP2}
 	err = z.Archive(filesToArchive, outputPath)
 	if err != nil {
 		return "", fmt.Errorf("failed to archive docs: %w", err)
