@@ -39,6 +39,11 @@ func (docat *Docat) Post(project string, version string, docsPath string) error 
 	}
 	writer.Close()
 
+	//remove trailing slash from host
+	if docat.Host[len(docat.Host)-1:] == "/" {
+		docat.Host = docat.Host[:len(docat.Host)-1]
+	}
+
 	apiUrl := fmt.Sprintf("%s/api/%s/%s", docat.Host, project, version)
 	request, err := http.NewRequest(http.MethodPost, apiUrl, body)
 	if err != nil {
