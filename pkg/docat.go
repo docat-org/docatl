@@ -7,6 +7,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 )
@@ -39,12 +40,11 @@ func (docat *Docat) Post(project string, version string, docsPath string) error 
 	}
 	writer.Close()
 
-	//remove trailing slash from host
-	if docat.Host[len(docat.Host)-1:] == "/" {
-		docat.Host = docat.Host[:len(docat.Host)-1]
+	apiUrl, err := url.JoinPath(docat.Host, "api", project, version)
+	if err != nil {
+		return fmt.Errorf("unable to upload documentation because cannot create an url for host: %s error: %s", docat.Host, err)
 	}
 
-	apiUrl := fmt.Sprintf("%s/api/%s/%s", docat.Host, project, version)
 	request, err := http.NewRequest(http.MethodPost, apiUrl, body)
 	if err != nil {
 		return fmt.Errorf("unable to upload documentation because cannot create POST request: %s", err)
@@ -73,7 +73,11 @@ func (docat *Docat) Post(project string, version string, docsPath string) error 
 }
 
 func (docat *Docat) Delete(project string, version string) error {
-	apiUrl := fmt.Sprintf("%s/api/%s/%s", docat.Host, project, version)
+	apiUrl, err := url.JoinPath(docat.Host, "api", project, version)
+	if err != nil {
+		return fmt.Errorf("unable to delete documentation because cannot create an url for host: %s error: %s", docat.Host, err)
+	}
+
 	request, err := http.NewRequest(http.MethodDelete, apiUrl, nil)
 	if err != nil {
 		return fmt.Errorf("unable to delete documentation because cannot create DELETE request: %s", err)
@@ -99,7 +103,11 @@ func (docat *Docat) Delete(project string, version string) error {
 }
 
 func (docat *Docat) Claim(project string) (ProjectClaim, error) {
-	apiUrl := fmt.Sprintf("%s/api/%s/claim", docat.Host, project)
+	apiUrl, err := url.JoinPath(docat.Host, "api", project, "claim")
+	if err != nil {
+		return ProjectClaim{}, fmt.Errorf("unable to claim project because cannot create an url for host: %s error: %s", docat.Host, err)
+	}
+
 	response, err := http.Get(apiUrl)
 	if err != nil {
 		return ProjectClaim{}, fmt.Errorf("unable to claim project because request failed: %s", err)
@@ -123,7 +131,11 @@ func (docat *Docat) Claim(project string) (ProjectClaim, error) {
 }
 
 func (docat *Docat) Tag(project string, version string, tag string) error {
-	apiUrl := fmt.Sprintf("%s/api/%s/%s/tags/%s", docat.Host, project, version, tag)
+	apiUrl, err := url.JoinPath(docat.Host, "api", project, version, "tags", tag)
+	if err != nil {
+		return fmt.Errorf("unable to tag documentation because cannot create an url for host: %s error: %s", docat.Host, err)
+	}
+
 	request, err := http.NewRequest(http.MethodPut, apiUrl, nil)
 	if err != nil {
 		return fmt.Errorf("unable to tag documentation because cannot create PUT request: %s", err)
