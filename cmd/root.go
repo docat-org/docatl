@@ -48,7 +48,7 @@ Upload documentation:
 
 Upload documentation to specific docat server:
 
-	docatl push --host localhost:8000 ./docs.zip myproject 1.0.0 -t latest
+	docatl push --host https://localhost:8000 ./docs.zip myproject 1.0.0 -t latest
 `,
 }
 

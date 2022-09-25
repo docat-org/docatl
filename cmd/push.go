@@ -39,7 +39,7 @@ Build & Upload documentation:
 
 Upload documentation to specific docat server:
 
-	docatl push --host localhost:8000 ./docs.zip myproject 1.0.0 -t latest
+	docatl push --host https://localhost:8000 ./docs.zip myproject 1.0.0 -t latest
 `,
 	Args: cobra.RangeArgs(1, 3),
 	Run: func(cmd *cobra.Command, args []string) {
