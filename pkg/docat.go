@@ -158,3 +158,61 @@ func (docat *Docat) Tag(project string, version string, tag string) error {
 
 	return nil
 }
+
+func (docat *Docat) PushIcon(project string, iconPath string) error {
+	file, err := os.Open(iconPath)
+	if err != nil {
+		return fmt.Errorf("unable to upload icon because the path '%s' does not exist", iconPath)
+	}
+	defer file.Close()
+
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile("file", filepath.Base(file.Name()))
+	if err != nil {
+		return fmt.Errorf("unable to upload icon because create form file for file '%s' failed", iconPath)
+	}
+
+	_, err = io.Copy(part, file)
+	if err != nil {
+		return fmt.Errorf("unable to upload icon because copy file content from file '%s' to request failed", iconPath)
+	}
+	writer.Close()
+
+	apiUrl, err := url.JoinPath(docat.Host, "api", project, "icon")
+	if err != nil {
+		return fmt.Errorf("unable to upload icon because createing an url for host: %s failed with error: %s", docat.Host, err)
+	}
+
+	request, err := http.NewRequest(http.MethodPost, apiUrl, bytes.NewReader(body.Bytes()))
+	if err != nil {
+		return fmt.Errorf("unable to upload icon because creating the POST request failed: %s", err)
+	}
+
+	request.Header.Add("Content-Type", writer.FormDataContentType())
+
+	if docat.ApiKey != "" {
+		request.Header.Add("Docat-Api-Key", docat.ApiKey)
+	}
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+
+	if err != nil {
+		return fmt.Errorf("unable to upload icon because the request failed: %s", err)
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusOK {
+		return nil
+	}
+
+	bodyBytes, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		return fmt.Errorf("unable to upload icon and read it's response (status code: %d", response.StatusCode)
+	}
+
+	return fmt.Errorf("unable to upload icon: (status code: %d) %s", response.StatusCode, string(bodyBytes))
+}
