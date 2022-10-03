@@ -1,0 +1,48 @@
+/*
+Copyright © 2021 Timo Furrer <tuxtimo@gmail.com>
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package cmd
+
+import (
+	"log"
+
+	"github.com/spf13/cobra"
+)
+
+var pushIconCmd = &cobra.Command{
+	Use:   "push-icon [PROJECT] [ICON_PATH]",
+	Short: "Push an icon for a project",
+	Long: `Push an icon for a project.
+Push an icon for a project:
+	push-icon myproject /path/to/icon.png
+	`,
+	Args: cobra.ExactArgs(2),
+	PreRun: func(cmd *cobra.Command, args []string) {
+		ensureHost()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		project, iconPath := args[0], args[1]
+
+		err := docat.PushIcon(project, iconPath)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Printf("Successfully pushed icon %s for project %s", iconPath, project)
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(pushIconCmd)
+}
