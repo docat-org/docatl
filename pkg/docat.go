@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -215,6 +216,36 @@ func (docat *Docat) PushIcon(project string, iconPath string) error {
 	}
 
 	return fmt.Errorf("unable to upload icon: (status code: %d) %s", response.StatusCode, string(bodyBytes))
+}
+
+func (docat *Docat) UpdateIndex() error {
+	apiUrl, err := url.JoinPath(docat.Host, "api", "index", "update")
+	if err != nil {
+		return fmt.Errorf("unable to update index because creating an url failed for host: %s error: %s", docat.Host, err)
+	}
+
+	request, err := http.NewRequest(http.MethodPost, apiUrl, nil)
+	if err != nil {
+		return fmt.Errorf("unable to update index because creating a POST request failed: %s", err)
+	}
+
+	log.Print("Updating index... (this may take a while)")
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return fmt.Errorf("unable to update index because request failed: %s", err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		bodyBytes, err := io.ReadAll(response.Body)
+		if err != nil {
+			return fmt.Errorf("unable to update index and read the response (status code: %d", response.StatusCode)
+		}
+		return fmt.Errorf("unable to update index: (status code: %d) %s", response.StatusCode, string(bodyBytes))
+	}
+
+	return nil
 }
 
 func (docat *Docat) Rename(project string, newName string) error {
