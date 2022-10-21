@@ -216,3 +216,39 @@ func (docat *Docat) PushIcon(project string, iconPath string) error {
 
 	return fmt.Errorf("unable to upload icon: (status code: %d) %s", response.StatusCode, string(bodyBytes))
 }
+
+func (docat *Docat) Rename(project string, newName string) error {
+	apiUrl, err := url.JoinPath(docat.Host, "api", project, "rename", newName)
+
+	if err != nil {
+		return fmt.Errorf("unable to rename project because creating an url failed for host: %s error: %s", docat.Host, err)
+	}
+
+	request, err := http.NewRequest(http.MethodPut, apiUrl, nil)
+	if err != nil {
+		return fmt.Errorf("unable to rename project because creating PUT request failed: %s", err)
+	}
+
+	if docat.ApiKey != "" {
+		request.Header.Add("Docat-Api-Key", docat.ApiKey)
+	}
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+
+	if err != nil {
+		return fmt.Errorf("unable to rename project because the request failed: %s", err)
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusOK {
+		return nil
+	}
+
+	bodyBytes, err := io.ReadAll(response.Body)
+	if err != nil {
+		return fmt.Errorf("unable to rename project and read the response (status code: %d", response.StatusCode)
+	}
+	return fmt.Errorf("unable to rename project: (status code: %d) %s", response.StatusCode, string(bodyBytes))
+}
