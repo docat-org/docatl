@@ -181,7 +181,7 @@ func (docat *Docat) PushIcon(project string, iconPath string) error {
 
 	apiUrl, err := url.JoinPath(docat.Host, "api", project, "icon")
 	if err != nil {
-		return fmt.Errorf("unable to upload icon because createing an url for host: %s failed with error: %s", docat.Host, err)
+		return fmt.Errorf("unable to upload icon because creating an url for host: %s failed with error: %s", docat.Host, err)
 	}
 
 	request, err := http.NewRequest(http.MethodPost, apiUrl, bytes.NewReader(body.Bytes()))
@@ -227,6 +227,7 @@ func (docat *Docat) Rename(project string, newName string) error {
 	request, err := http.NewRequest(http.MethodPut, apiUrl, nil)
 	if err != nil {
 		return fmt.Errorf("unable to rename project because creating PUT request failed: %s", err)
+
 	}
 
 	if docat.ApiKey != "" {
@@ -251,4 +252,43 @@ func (docat *Docat) Rename(project string, newName string) error {
 		return fmt.Errorf("unable to rename project and read the response (status code: %d", response.StatusCode)
 	}
 	return fmt.Errorf("unable to rename project: (status code: %d) %s", response.StatusCode, string(bodyBytes))
+}
+
+func (docat *Docat) HideOrShowVersion(project string, version string, hide bool) error {
+	var hideOrShow string
+	if hide {
+		hideOrShow = "hide"
+	} else {
+		hideOrShow = "show"
+	}
+
+	apiUrl, err := url.JoinPath(docat.Host, "api", project, version, hideOrShow)
+	if err != nil {
+		return fmt.Errorf("unable to %s version because creating an url failed for host: %s error: %s", hideOrShow, docat.Host, err)
+	}
+
+	request, err := http.NewRequest(http.MethodPost, apiUrl, nil)
+	if err != nil {
+		return fmt.Errorf("unable to %s version because creating POST request failed: %s", hideOrShow, err)
+	}
+	if docat.ApiKey != "" {
+		request.Header.Add("Docat-Api-Key", docat.ApiKey)
+	}
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return fmt.Errorf("unable to %s version because request failed: %s", hideOrShow, err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		bodyBytes, err := io.ReadAll(response.Body)
+		if err != nil {
+			return fmt.Errorf("unable to %s version and read it's response (status code: %d", hideOrShow, response.StatusCode)
+		}
+		return fmt.Errorf("unable to %s version: (status code: %d) %s", hideOrShow, response.StatusCode, string(bodyBytes))
+	}
+
+	return nil
 }
