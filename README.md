@@ -36,6 +36,7 @@ docatl push ./docs_myproject_v1.0.0.zip
 * `delete`: delete documentation from a docat server
 * `build`: build a documentation artifact to push to a docat server
 * `push-icon`: push an icon for a specific documentation to a docat server
+* `rename`: rename a project on a docat server
 
 ## Installation
 
