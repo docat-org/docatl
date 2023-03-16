@@ -5,7 +5,7 @@ RUN CGO_ENABLED=0 go build -o /bin/docatl
 
 FROM alpine:latest
 RUN apk update \
-    && apk add -U --no-cache ca-certificates
+    && apk add -U --no-cache ca-certificates zip
 COPY --from=build /bin/docatl /bin/docatl
 WORKDIR /docs
 CMD [ "/bin/docatl" ]
