@@ -39,7 +39,6 @@ docatl push ./docs_myproject_v1.0.0.zip
 * `rename`: rename a project on a docat server
 * `hide`: hide a version on a docat server
 * `show`: show a previously hidden version on a docat server
-* `update-index`: force the re-creation of the search index on a docat server
 
 ## Installation
 
