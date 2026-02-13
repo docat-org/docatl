@@ -23,7 +23,7 @@ jobs:
           go-version: ${{ matrix.go-version }}
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v9
         with:
           version: latest
 
