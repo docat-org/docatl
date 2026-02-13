@@ -26,7 +26,7 @@ func (docat *Docat) Post(project string, version string, docsPath string) error 
 	if err != nil {
 		return fmt.Errorf("unable to upload documentation because it isn't accessible locally at '%s'", docsPath)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
@@ -38,7 +38,9 @@ func (docat *Docat) Post(project string, version string, docsPath string) error 
 	if err != nil {
 		return fmt.Errorf("unable to upload documentation because cannot copy file content of file '%s' to request", docsPath)
 	}
-	writer.Close()
+	if err = writer.Close(); err != nil {
+		return fmt.Errorf("unable to upload documentation because cannot close multipart writer: %s", err)
+	}
 
 	apiUrl, err := url.JoinPath(docat.Host, "api", project, version)
 	if err != nil {
@@ -59,7 +61,7 @@ func (docat *Docat) Post(project string, version string, docsPath string) error 
 	if err != nil {
 		return fmt.Errorf("unable to upload documentation: %s", err)
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode != http.StatusCreated {
 		bodyBytes, err := io.ReadAll(response.Body)
@@ -89,7 +91,7 @@ func (docat *Docat) Delete(project string, version string) error {
 	if err != nil {
 		return fmt.Errorf("unable to delete documentation because request failed: %s", err)
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode != http.StatusOK {
 		bodyBytes, err := io.ReadAll(response.Body)
@@ -112,7 +114,7 @@ func (docat *Docat) Claim(project string) (ProjectClaim, error) {
 	if err != nil {
 		return ProjectClaim{}, fmt.Errorf("unable to claim project because request failed: %s", err)
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	bodyBytes, err := io.ReadAll(response.Body)
 	if err != nil {
@@ -146,7 +148,7 @@ func (docat *Docat) Tag(project string, version string, tag string) error {
 	if err != nil {
 		return fmt.Errorf("unable to tag documentation because request failed: %s", err)
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode != http.StatusCreated {
 		bodyBytes, err := io.ReadAll(response.Body)
@@ -164,7 +166,7 @@ func (docat *Docat) PushIcon(project string, iconPath string) error {
 	if err != nil {
 		return fmt.Errorf("unable to upload icon because the path '%s' does not exist", iconPath)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
@@ -177,7 +179,9 @@ func (docat *Docat) PushIcon(project string, iconPath string) error {
 	if err != nil {
 		return fmt.Errorf("unable to upload icon because copy file content from file '%s' to request failed", iconPath)
 	}
-	writer.Close()
+	if err = writer.Close(); err != nil {
+		return fmt.Errorf("unable to upload icon because cannot close multipart writer: %s", err)
+	}
 
 	apiUrl, err := url.JoinPath(docat.Host, "api", project, "icon")
 	if err != nil {
@@ -202,7 +206,7 @@ func (docat *Docat) PushIcon(project string, iconPath string) error {
 		return fmt.Errorf("unable to upload icon because the request failed: %s", err)
 	}
 
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode == http.StatusOK {
 		return nil
@@ -241,7 +245,7 @@ func (docat *Docat) Rename(project string, newName string) error {
 		return fmt.Errorf("unable to rename project because the request failed: %s", err)
 	}
 
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode == http.StatusOK {
 		return nil
@@ -280,7 +284,7 @@ func (docat *Docat) HideOrShowVersion(project string, version string, hide bool)
 	if err != nil {
 		return fmt.Errorf("unable to %s version because request failed: %s", hideOrShow, err)
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode != http.StatusOK {
 		bodyBytes, err := io.ReadAll(response.Body)
